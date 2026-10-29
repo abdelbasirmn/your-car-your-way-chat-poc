@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: ycyw-chat-poc
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/ycyw}
+    username: ${DB_USER:ycyw}
+    password: ${DB_PASSWORD:local-demo-only}
+    hikari:
+      maximum-pool-size: 8
+  flyway:
+    enabled: true
+  session:
+    jdbc:
+      initialize-schema: never
+    timeout: ${SESSION_TIMEOUT:30m}
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+  mvc:
+    async:
+      request-timeout: 0
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: 8080
+  servlet:
+    session:
+      cookie:
+        name: YCYWSESSION
+        http-only: true
+        same-site: lax
+  error:
+    include-message: never
+poc:
+  stream-poll-ms: ${STREAM_POLL_MS:1000}
+logging:
+  level:
+    root: INFO
+    org.springframework.jdbc: WARN

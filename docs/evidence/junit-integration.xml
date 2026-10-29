@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.ycyw.poc.ChatIntegrationTest" time="13.748" tests="7" errors="0" skipped="0" failures="0" flakes="0">
+  <testcase name="authenticationAndCsrfAreReal" classname="com.ycyw.poc.ChatIntegrationTest" time="2.412" />
+  <testcase name="privateConversationRequiresOwnershipOrAssignment" classname="com.ycyw.poc.ChatIntegrationTest" time="1.512" />
+  <testcase name="concurrentMessagesHaveUniqueStableSequences" classname="com.ycyw.poc.ChatIntegrationTest" time="0.488" />
+  <testcase name="expiredSessionCannotReadPrivateHistory" classname="com.ycyw.poc.ChatIntegrationTest" time="0.294" />
+  <testcase name="validationAndPaginationDoNotLoseMessages" classname="com.ycyw.poc.ChatIntegrationTest" time="1.03" />
+  <testcase name="retryIsIdempotentAndClosedConversationCannotAppend" classname="com.ycyw.poc.ChatIntegrationTest" time="0.443" />
+  <testcase name="sseReplaysPersistedEventsAfterCursor" classname="com.ycyw.poc.ChatIntegrationTest" time="0.475" />
+</testsuite>

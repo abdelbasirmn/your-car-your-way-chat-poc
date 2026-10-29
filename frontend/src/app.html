@@ -1,0 +1,35 @@
+<a class="skip" href="#main">Aller au contenu</a>
+<header><div><p class="eyebrow">YOUR CAR YOUR WAY</p><h1>Tchat d’assistance</h1><p>Preuve de concept locale · échanges privés et persistants</p></div>
+@if(user(); as u){<div class="identity"><strong>{{u.displayName}}</strong><span>{{u.role === 'SUPPORT' ? 'Agent de support' : 'Client'}}</span><button (click)="logout()">Se déconnecter</button></div>}</header>
+<main id="main">
+@if(loading()){<p role="status">Chargement de la session…</p>}
+@else if(!user()){
+  <section class="login"><h2>Connexion à la démonstration</h2><p>Utilisez un compte fictif du README. Pour dialoguer, ouvrez le support dans un autre navigateur.</p>
+  <form (ngSubmit)="login()"><label for="username">Adresse du compte</label><input id="username" name="username" type="email" autocomplete="username" aria-describedby="global-error" required [(ngModel)]="username">
+  <label for="password">Mot de passe</label><input id="password" name="password" type="password" autocomplete="current-password" aria-describedby="global-error" required [(ngModel)]="password">
+  <button type="submit" [disabled]="busy()">{{busy() ? 'Connexion…' : 'Se connecter'}}</button></form></section>
+} @else {
+<div class="layout"><aside aria-label="Conversations"><h2>Vos demandes</h2><button (click)="refresh()">Actualiser la liste</button>
+@if(user()?.role === 'CLIENT'){<button class="primary" (click)="create()" [disabled]="busy()">Nouvelle conversation</button>}
+<ul class="requests">@for(c of conversations();track c.id){<li>
+  @if(canRead(c)){<button [attr.aria-current]="selected()?.id === c.id ? 'true' : null" (click)="select(c)"><strong>{{c.ownerName}}</strong><span>{{c.status === 'CLOSED' ? 'Clôturée' : c.status === 'WAITING' ? 'En attente de support' : 'Prise en charge'}}</span><small>{{c.id.slice(0,8)}}</small></button>}
+  @else{<p>Demande de {{c.ownerName}}</p><button (click)="claim(c)">Prendre en charge</button>}
+</li>}@empty{<li>Aucune conversation disponible.</li>}</ul></aside>
+<section class="chat" aria-label="Échange privé">
+@if(selected();as c){<div class="chat-heading"><h2>Conversation {{c.id.slice(0,8)}}</h2><p>{{connection()}} · {{c.status}}</p></div>
+<div class="actions"><button (click)="toggleReception()">Suspendre / reprendre la réception</button><button (click)="jump()">Aller aux derniers messages</button>
+@if(c.status !== 'CLOSED'){<button (click)="close()" [disabled]="!!pending()">Clôturer</button>}
+@if(user()?.role === 'SUPPORT' && c.status !== 'CLOSED'){<button (click)="release()">Libérer l’affectation</button>}</div>
+<div #history class="history" tabindex="0" aria-label="Historique des messages">
+@if(more()){<button (click)="older()">Charger les messages plus anciens</button>}
+<ol>@for(m of messages();track m.id){<li [class.mine]="m.senderRole === user()?.role"><div class="message-meta"><strong>{{m.senderRole === 'SUPPORT' ? 'Support' : 'Client'}}</strong><time [attr.datetime]="m.createdAt">{{m.createdAt | date:'dd/MM/yyyy HH:mm:ss'}}</time><span>Enregistré · #{{m.sequence}}</span></div><p>{{m.text}}</p></li>}@empty{<li>Aucun message enregistré pour le moment.</li>}</ol></div>
+@if(c.status === 'CLOSED'){<p>Échange clôturé. L’historique reste consultable ; ouvrez une nouvelle demande pour poursuivre.</p>}
+@else{<form class="compose" (ngSubmit)="send()"><label for="message">Votre message</label><textarea #composer id="message" name="message" rows="3" [(ngModel)]="draft" [readOnly]="!!pending()" aria-describedby="message-help global-error"></textarea>
+<p id="message-help">{{count()}} / 2 000 caractères. Le texte est envoyé tel quel. Aucun accusé de lecture n’est fourni.</p>
+<button type="submit" class="primary" [disabled]="sending() || !!pending()">{{sending()?'Enregistrement…':'Envoyer le message'}}</button></form>}
+@if(pending()){<div class="uncertain"><p>Un envoi reste à vérifier. Son texte et son identifiant sont conservés dans cette session de page.</p><button (click)="retry()" [disabled]="sending()">Réessayer le même envoi</button></div>}
+} @else {<div class="empty"><h2>Un espace pour vous aider</h2><p>Sélectionnez une conversation ou créez une nouvelle demande. Les messages restent enregistrés après un redémarrage.</p></div>}
+</section></div>
+}
+<p id="global-error" class="error" role="alert">{{error()}}</p><p class="sr-only" aria-live="polite" aria-atomic="true">{{announcement()}}</p>
+</main><footer>PoC pédagogique · données fictives · aucun paiement ni réservation réelle</footer>

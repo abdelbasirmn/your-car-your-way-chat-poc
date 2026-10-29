@@ -1,0 +1,59 @@
+name: Verify chat PoC
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.11-bookworm
+        env:
+          POSTGRES_DB: ycyw
+          POSTGRES_USER: ycyw
+          POSTGRES_PASSWORD: local-demo-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U ycyw -d ycyw"
+          --health-interval=3s --health-timeout=3s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.1'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --no-audit --no-fund && npm run build
+        working-directory: frontend
+      - run: |
+          mkdir -p backend/src/main/resources/static
+          cp -R frontend/dist/chat/browser/. backend/src/main/resources/static/
+      - run: ./mvnw -B verify
+        working-directory: backend
+        env:
+          DB_URL: jdbc:postgresql://localhost:5432/ycyw
+          DB_USER: ycyw
+          DB_PASSWORD: local-demo-only
+      - name: Start assembled application
+        run: |
+          SPRING_PROFILES_ACTIVE=local java -jar backend/target/chat-poc-1.0.0.jar > /tmp/ycyw-app.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8080/api/v1/health; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/ycyw-app.log
+          exit 1
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: npm run test:e2e
+        working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-results
+          path: |
+            backend/target/surefire-reports/
+            docs/evidence/playwright-results.json

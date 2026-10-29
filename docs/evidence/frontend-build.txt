@@ -1,0 +1,16 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> ycyw-chat-poc@1.0.0 build
+> ng build
+
+❯ Building...
+✔ Building...
+Initial chunk files | Names         |  Raw size | Estimated transfer size
+main-P7KIJTI7.js    | main          | 191.33 kB |                54.10 kB
+styles-U6F7FVS5.css | styles        |   3.26 kB |                 1.06 kB
+
+                    | Initial total | 194.59 kB |                55.16 kB
+
+Application bundle generation complete. [7.244 seconds] - 2026-10-28T15:46:58.131Z
+
+Output location: <workspace>/projet-ycyw/etape4-poc/frontend/dist/chat

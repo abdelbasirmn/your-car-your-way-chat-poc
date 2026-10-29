@@ -1,0 +1,14 @@
+**/target/
+backend/src/main/resources/static/
+**/node_modules/
+frontend/dist/
+frontend/.angular/
+.env
+.idea/
+*.log
+*.pid
+test-results/
+playwright-report/
+.DS_Store
+*.bundle
+frontend/test-results/

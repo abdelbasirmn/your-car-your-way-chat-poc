@@ -1,0 +1,9 @@
+.git
+**/node_modules
+**/target
+**/dist
+**/.angular
+**/test-results
+backend/src/main/resources/static
+.env
+*.bundle

@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:17.11-bookworm
+    environment:
+      POSTGRES_DB: ycyw
+      POSTGRES_USER: ycyw
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-local-demo-only}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ycyw -d ycyw"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  app:
+    build: .
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SERVER_ADDRESS: 0.0.0.0
+      DB_URL: jdbc:postgresql://db:5432/ycyw
+      DB_USER: ycyw
+      DB_PASSWORD: ${DB_PASSWORD:-local-demo-only}
+    ports:
+      - "127.0.0.1:8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  postgres_data:

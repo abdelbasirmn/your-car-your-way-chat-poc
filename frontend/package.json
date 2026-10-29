@@ -1,0 +1,30 @@
+{
+  "name": "ycyw-chat-poc",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "start": "ng serve --host 127.0.0.1 --proxy-config proxy.conf.json",
+    "build": "ng build",
+    "check": "ng build --configuration development",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@angular/common": "21.2.25",
+    "@angular/compiler": "21.2.25",
+    "@angular/core": "21.2.25",
+    "@angular/forms": "21.2.25",
+    "@angular/platform-browser": "21.2.25",
+    "rxjs": "7.8.2",
+    "tslib": "2.8.1"
+  },
+  "devDependencies": {
+    "@angular/build": "21.2.29",
+    "@angular/cli": "21.2.29",
+    "@angular/compiler-cli": "21.2.25",
+    "@playwright/test": "1.62.1",
+    "typescript": "5.9.3"
+  }
+}

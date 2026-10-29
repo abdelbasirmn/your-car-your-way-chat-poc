@@ -1,0 +1,6 @@
+Running 2 tests using 1 worker
+    [pid=117][err] [117:117:1028/164249.814982:FATAL:chrome/browser/process_singleton_posix.cc:297] Check failed: . socket() failed: Operation not permitted (1)
+      - [pid=117][err] [117:117:1028/164249.814982:FATAL:chrome/browser/process_singleton_posix.cc:297] Check failed: . socket() failed: Operation not permitted (1)
+    [pid=138][err] [138:138:1028/164255.953064:FATAL:chrome/browser/process_singleton_posix.cc:297] Check failed: . socket() failed: Operation not permitted (1)
+      - [pid=138][err] [138:138:1028/164255.953064:FATAL:chrome/browser/process_singleton_posix.cc:297] Check failed: . socket() failed: Operation not permitted (1)
+Assertions navigateur non executees : lancement bloque par la politique de sockets Unix de cet environnement.

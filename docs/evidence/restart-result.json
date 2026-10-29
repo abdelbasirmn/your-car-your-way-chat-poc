@@ -1,0 +1,9 @@
+{
+  "backend_restart": "PASS",
+  "same_session_restored": "PASS",
+  "same_committed_message_found": "PASS",
+  "assembled_frontend_served": "PASS",
+  "database": "PostgreSQL 18.6 WASM / PGlite",
+  "connection_pool": 1,
+  "migration_mode": "SQL V1 applied directly, Flyway disabled only in test harness"
+}
