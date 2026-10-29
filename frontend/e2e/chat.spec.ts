@@ -58,16 +58,34 @@ test('Échange privé, reprise SSE, texte inerte et clavier',async({browser})=>{
   const alice=await a.newPage(),support=await s.newPage(),bob=await b.newPage();
   try{
     await login(alice,'alice@example.test','Demo-Alice-2026!');
-    await alice.getByRole('button',{name:'Nouvelle conversation',exact:true}).click();
-    await expect(alice.getByRole('heading',{name:/Conversation /})).toBeVisible();
-    const title=await alice.getByRole('heading',{name:/Conversation /}).innerText();
-    const shortId=title.split(' ')[1];
+    const [creationResponse] = await Promise.all([
+      alice.waitForResponse(response =>
+        new URL(response.url()).pathname === '/api/v1/conversations' &&
+        response.request().method() === 'POST',
+        { timeout: 15000 }
+      ),
+      alice.getByRole('button', {
+        name: 'Nouvelle conversation', exact: true
+      }).click()
+    ]);
+    expect(creationResponse.status()).toBe(200);
+    const createdConversation = await creationResponse.json();
+    expect(createdConversation.id).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    );
+    const conversationId: string = createdConversation.id;
+    const shortId = conversationId.slice(0, 8);
+    await expect(alice.getByRole('heading', {
+      name: 'Conversation ' + shortId, exact: true
+    })).toBeVisible();
     await alice.getByLabel('Votre message',{exact:true}).fill('Bonjour du test navigateur');
     await alice.getByRole('button',{name:'Envoyer le message',exact:true}).click();
     await expect(alice.locator('.history')).toContainText('Bonjour du test navigateur');
     await login(support,'support@example.test','Demo-Support-2026!');
-    const waiting=support.locator('.requests li').filter({hasText:'Demande de Alice'}).first();
-    // New conversations are listed newest first; take the one just opened.
+    const waiting = support.locator(
+      `.requests li[data-conversation-id="${conversationId}"]`
+    );
+    await expect(waiting).toHaveCount(1);
     await waiting.getByRole('button',{name:'Prendre en charge'}).click();
     await expect(support.getByRole('heading',{name:'Conversation '+shortId,exact:true})).toBeVisible();
     await expect(support.locator('.history')).toContainText('Bonjour du test navigateur');
@@ -83,9 +101,10 @@ test('Échange privé, reprise SSE, texte inerte et clavier',async({browser})=>{
     await alice.keyboard.press('Enter');await expect(alice.locator('.history')).toContainText('<script>window.pwned=true</script>');
     expect(await alice.evaluate(()=>('pwned' in window))).toBe(false);
     await login(bob,'bob@example.test','Demo-Bob-2026!');
-    const conversations=await alice.evaluate(async()=>await (await fetch('/api/v1/conversations')).json());
-    const target=conversations.find((c:any)=>c.id.startsWith(shortId));
-    const denied=await bob.request.get('/api/v1/conversations/'+target.id+'/messages');expect(denied.status()).toBe(404);
+    const denied = await bob.request.get(
+      '/api/v1/conversations/' + conversationId + '/messages'
+    );
+    expect(denied.status()).toBe(404);
     await alice.getByRole('button',{name:'Se déconnecter'}).click();
     await expect(alice.getByRole('button',{name:'Se connecter',exact:true})).toBeVisible();
   }finally{await a.close();await s.close();await b.close();}

@@ -11,7 +11,7 @@
 } @else {
 <div class="layout"><aside aria-label="Conversations"><h2>Vos demandes</h2><button (click)="refresh()">Actualiser la liste</button>
 @if(user()?.role === 'CLIENT'){<button class="primary" (click)="create()" [disabled]="busy()">Nouvelle conversation</button>}
-<ul class="requests">@for(c of conversations();track c.id){<li>
+<ul class="requests">@for(c of conversations();track c.id){<li [attr.data-conversation-id]="c.id">
   @if(canRead(c)){<button [attr.aria-current]="selected()?.id === c.id ? 'true' : null" (click)="select(c)"><strong>{{c.ownerName}}</strong><span>{{c.status === 'CLOSED' ? 'Clôturée' : c.status === 'WAITING' ? 'En attente de support' : 'Prise en charge'}}</span><small>{{c.id.slice(0,8)}}</small></button>}
   @else{<p>Demande de {{c.ownerName}}</p><button (click)="claim(c)">Prendre en charge</button>}
 </li>}@empty{<li>Aucune conversation disponible.</li>}</ul></aside>
