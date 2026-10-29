@@ -1,13 +1,13 @@
 <a class="skip" href="#main">Aller au contenu</a>
-<header><div><p class="eyebrow">YOUR CAR YOUR WAY</p><h1>Tchat d’assistance</h1><p>Preuve de concept locale · échanges privés et persistants</p></div>
+<header><div><p class="eyebrow">YOUR CAR YOUR WAY</p><h1>Tchat d’assistance</h1><p>Votre espace d’assistance personnel</p></div>
 @if(user(); as u){<div class="identity"><strong>{{u.displayName}}</strong><span>{{u.role === 'SUPPORT' ? 'Agent de support' : 'Client'}}</span><button (click)="logout()">Se déconnecter</button></div>}</header>
 <main id="main">
 @if(loading()){<p role="status">Chargement de la session…</p>}
 @else if(!user()){
-  <section class="login"><h2>Connexion à la démonstration</h2><p>Utilisez un compte fictif du README. Pour dialoguer, ouvrez le support dans un autre navigateur.</p>
+  <div class="welcome"><section class="welcome-story" aria-label="Votre assistance"><p class="eyebrow">À VOS CÔTÉS, À CHAQUE ÉTAPE</p><h2>Votre route.<br><em>Notre attention.</em></h2><p>Un espace pour poser vos questions et retrouver vos échanges avec notre équipe.</p><ul class="service-points"><li>Une conversation privée</li><li>Votre historique à portée de main</li><li>Des échanges qui vous suivent</li></ul></section><section class="login"><h2>Connexion à votre espace</h2><p>Retrouvez vos conversations et contactez notre équipe. Pour cette démonstration, utilisez les comptes du README.</p>
   <form (ngSubmit)="login()"><label for="username">Adresse du compte</label><input id="username" name="username" type="email" autocomplete="username" aria-describedby="global-error" required [(ngModel)]="username">
   <label for="password">Mot de passe</label><input id="password" name="password" type="password" autocomplete="current-password" aria-describedby="global-error" required [(ngModel)]="password">
-  <button type="submit" [disabled]="busy()">{{busy() ? 'Connexion…' : 'Se connecter'}}</button></form></section>
+  <button type="submit" [disabled]="busy()">{{busy() ? 'Connexion…' : 'Se connecter'}}</button></form></section></div>
 } @else {
 <div class="layout"><aside aria-label="Conversations"><h2>Vos demandes</h2><button (click)="refresh()">Actualiser la liste</button>
 @if(user()?.role === 'CLIENT'){<button class="primary" (click)="create()" [disabled]="busy()">Nouvelle conversation</button>}
@@ -32,4 +32,4 @@
 </section></div>
 }
 <p id="global-error" class="error" role="alert">{{error()}}</p><p class="sr-only" aria-live="polite" aria-atomic="true">{{announcement()}}</p>
-</main><footer>PoC pédagogique · données fictives · aucun paiement ni réservation réelle</footer>
+</main><footer>Your Car Your Way · Assistance client | Démonstration locale · comptes fictifs</footer>

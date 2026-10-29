@@ -56,4 +56,4 @@ jobs:
           name: verification-results
           path: |
             backend/target/surefire-reports/
-            docs/evidence/playwright-results.json
+            frontend/test-results/playwright-results.json
