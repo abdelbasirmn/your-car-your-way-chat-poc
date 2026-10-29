@@ -34,6 +34,23 @@ async function login(
       exact: true
     })
   ).toBeVisible({ timeout: 15000 });
+
+  // Verify the authenticated identity, not only the presence of a logout button.
+  // page.request shares this browser context's cookies.
+  const sessionResponse = await page.request.get('/api/v1/session', {
+    timeout: 15000
+  });
+
+  expect(
+    sessionResponse.status(),
+    'La session authentifiee doit etre accessible en HTTP 200'
+  ).toBe(200);
+
+  const session = await sessionResponse.json();
+  expect(
+    session.email,
+    'La session doit appartenir au compte qui vient de se connecter'
+  ).toBe(email);
 }
 
 test('Échange privé, reprise SSE, texte inerte et clavier',async({browser})=>{
